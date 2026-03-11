@@ -1,4 +1,4 @@
-include { INDEX } from './script2.nf'
+include { INDEX } from './modules/INDEX.nf'
 
 params.reads = "$projectDir/data/ggal/gut_{1,2}.fq"
 params.transcriptome_file = "$projectDir/data/ggal/transcriptome.fa"

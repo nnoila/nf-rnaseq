@@ -1,12 +1,12 @@
+/*
+ * Example showing pipeline modularizaion
+ * Author: Paolo Di Tommaso
+ */
 nextflow.enable.dsl=2
 
-include { INDEX } from './modules/INDEX.nf'
-include { QUANT } from './modules/QUANT.nf'
-
-
 /*
-* pipeline input parameters
-*/
+ * pipeline input parameters
+ */
 params.reads = "$projectDir/data/yeast/reads/ref1_{1,2}.fq.gz"
 params.transcriptome = "$projectDir/data/yeast/transcriptome/Saccharomyces_cerevisiae.R64-1-1.cdna.all.fa.gz"
 params.multiqc = "$projectDir/multiqc"
@@ -22,11 +22,9 @@ log.info """\
          .stripIndent()
 
 
-Channel
-    .fromFilePairs( params.reads, checkIfExists:true )
-    .set { read_pairs_ch }
+include { RNASEQFLOW } from './modules/rnaseq-flow.nf'
 
 workflow {
-  index_ch=INDEX(params.transcriptome)
-  quant_ch=QUANT(index_ch,read_pairs_ch)
+    read_pairs_ch = Channel .fromFilePairs( params.reads, checkIfExists:true )
+    RNASEQFLOW( params.transcriptome, read_pairs_ch )
 }

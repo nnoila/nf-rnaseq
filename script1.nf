@@ -5,7 +5,7 @@ params.outdir = "results"
 
 log.info """\
     RNASEQ - NF PIPELINE (TRAINING)
-    ===================================
+    ================================
     transcriptome: ${params.transcriptome_file}
     reads        : ${params.reads}
     outdir       : ${params.outdir}

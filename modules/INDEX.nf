@@ -1,4 +1,6 @@
 process INDEX {
+    cpus 2
+    
     input:
     path transcriptome
 

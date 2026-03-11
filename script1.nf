@@ -1,3 +1,5 @@
+include { INDEX } from './script2.nf'
+
 params.reads = "$projectDir/data/ggal/gut_{1,2}.fq"
 params.transcriptome_file = "$projectDir/data/ggal/transcriptome.fa"
 params.multiqc = "$projectDir/multiqc"
@@ -13,3 +15,8 @@ log.info """\
     .stripIndent(true)
 
 println "reads: $params.reads"
+
+workflow {
+    index_ch = INDEX(params.transcriptome_file)
+    index_ch.view()
+}

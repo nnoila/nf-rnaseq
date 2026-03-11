@@ -1,5 +1,7 @@
 nextflow.enable.dsl=2
 
+include { FASTQC } from './modules/FASTQC.nf'
+
 /*
 * pipeline input parameters
 */
@@ -19,58 +21,11 @@ log.info """\
          .stripIndent()
 
 
-/*
- * Run Salmon to perform the quantification of expression using
- * the index and the matched read files
- */
-process QUANT {
-    tag "quantification on $pair_id"
-    publishDir params.outdir, mode:'copy'
-
-    input:
-    path index
-    tuple val(pair_id), path(reads)
-
-    output:
-    path(pair_id)
-
-    script:
-    """
-    salmon quant \
-    --threads $task.cpus \
-    --libType=U -i $index \
-    -1 ${reads[0]} \
-    -2 ${reads[1]} \
-    -o $pair_id
-    """
-}
-
-/*
- * Run fastQC to check quality of reads files
- */
-process FASTQC {
-    tag "FASTQC on $sample_id"
-    cpus 1
-
-    input:
-    tuple val(sample_id), path(reads)
-
-    output:
-    path("fastqc_${sample_id}_logs")
-
-    script:
-    """
-    mkdir fastqc_${sample_id}_logs
-    fastqc -o fastqc_${sample_id}_logs -f fastq -q ${reads} -t ${task.cpus}
-    """
-}
-
-
 Channel
     .fromFilePairs( params.reads, checkIfExists:true )
     .set { read_pairs_ch }
 
 workflow {
-  index_ch=INDEX(params.transcriptome)
-  quant_ch=QUANT(index_ch,read_pairs_ch)
+    index_ch=INDEX(params.transcriptome)
+    quant_ch=QUANT(index_ch,read_pairs_ch)
 }

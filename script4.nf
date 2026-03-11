@@ -7,8 +7,8 @@ include { QUANT } from './modules/QUANT.nf'
 /*
 * pipeline input parameters
 */
-params.reads = "$projectDir/data/yeast/reads/ref1_{1,2}.fq.gz"
-params.transcriptome = "$projectDir/data/yeast/transcriptome/Saccharomyces_cerevisiae.R64-1-1.cdna.all.fa.gz"
+params.reads = "$projectDir/data/ggal/gut_{1,2}.fq"
+params.transcriptome_file = "$projectDir/data/ggal/transcriptome.fa"
 params.multiqc = "$projectDir/multiqc"
 params.outdir = "results"
 

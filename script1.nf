@@ -1,6 +1,6 @@
 include { INDEX } from './modules/INDEX.nf'
 
-params.reads = "$projectDir/data/ggal/gut_{1,2}.fq"
+params.reads = "$projectDir/data/ggal/*_{1,2}.fq"
 params.transcriptome_file = "$projectDir/data/ggal/transcriptome.fa"
 params.multiqc = "$projectDir/multiqc"
 params.outdir = "results"

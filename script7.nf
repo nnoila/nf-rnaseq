@@ -1,24 +1,33 @@
 nextflow.enable.dsl=2
 
+include { INDEX } from './modules/INDEX.nf'
+include { QUANT } from './modules/QUANT.nf'
+include { FASTQC } from './modules/FASTQC.nf'
+include { MULTIQC } from './modules/MULTIQC.nf'
+
 /*
  * pipeline input parameters
  */
-params.reads = "$projectDir/data/ggal/gut_{1,2}.fq"
+params.reads = "$projectDir/data/ggal/*_{1,2}.fq"
 params.transcriptome_file = "$projectDir/data/ggal/transcriptome.fa"
 params.multiqc = "$projectDir/multiqc"
 params.outdir = "results"
 
 log.info """\
-         R N A S E Q - N F   P I P E L I N E
-         ===================================
-         transcriptome: ${params.transcriptome}
-         reads        : ${params.reads}
-         outdir       : ${params.outdir}
-         """
-         .stripIndent()
+    RNASEQ - NF PIPELINE (TRAINING)
+    ================================
+    transcriptome: ${params.transcriptome_file}
+    reads        : ${params.reads}
+    outdir       : ${params.outdir}
+    """
+    .stripIndent(true)
+
 
 workflow {
-    index_ch=INDEX(params.transcriptome)
+    read_pairs_ch = Channel
+                    .fromFilePairs( params.reads, checkIfExists:true )
+                    .view()
+    index_ch=INDEX(params.transcriptome_file)
     quant_ch=QUANT(index_ch,read_pairs_ch)
     fastqc_ch=FASTQC(read_pairs_ch)
     MULTIQC(quant_ch.mix(fastqc_ch).collect())

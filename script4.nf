@@ -3,30 +3,29 @@ nextflow.enable.dsl=2
 include { INDEX } from './modules/INDEX.nf'
 include { QUANT } from './modules/QUANT.nf'
 
-
 /*
 * pipeline input parameters
 */
-params.reads = "$projectDir/data/ggal/gut_{1,2}.fq"
+params.reads = "$projectDir/data/ggal/*_{1,2}.fq"
 params.transcriptome_file = "$projectDir/data/ggal/transcriptome.fa"
 params.multiqc = "$projectDir/multiqc"
 params.outdir = "results"
 
 log.info """\
-         RNASEQ-NF PIPELINE
-         ===================================
-         transcriptome: ${params.transcriptome}
-         reads        : ${params.reads}
-         outdir       : ${params.outdir}
-         """
-         .stripIndent()
+    RNASEQ - NF PIPELINE (TRAINING)
+    ================================
+    transcriptome: ${params.transcriptome_file}
+    reads        : ${params.reads}
+    outdir       : ${params.outdir}
+    """
+    .stripIndent(true)
 
-
-Channel
-    .fromFilePairs( params.reads, checkIfExists:true )
-    .set { read_pairs_ch }
+println("outdir is ${params.outdir}")
 
 workflow {
-  index_ch=INDEX(params.transcriptome)
-  quant_ch=QUANT(index_ch,read_pairs_ch)
+    read_pairs_ch = Channel
+                    .fromFilePairs( params.reads, checkIfExists:true )
+                    .view()
+    index_ch=INDEX(params.transcriptome_file)
+    quant_ch=QUANT(index_ch, read_pairs_ch)
 }

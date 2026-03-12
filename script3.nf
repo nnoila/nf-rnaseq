@@ -3,19 +3,23 @@ nextflow.enable.dsl=2
 /*
  * pipeline input parameters
  */
-params.reads = "$projectDir/data/ggal/gut_{1,2}.fq"
-params.transcriptome = "$projectDir/data/ggal/transcriptome.fa"
+params.reads = "$projectDir/data/ggal/*_{1,2}.fq"
+params.transcriptome_file = "$projectDir/data/ggal/transcriptome.fa"
 params.multiqc = "$projectDir/multiqc"
 params.outdir = "results"
 
 log.info """\
-         RNASEQ-NF PIPELINE
-         ==================
-         transcriptome: ${params.transcriptome}
-         reads        : ${params.reads}
-         outdir       : ${params.outdir}4         """
-         .stripIndent()
+    RNASEQ - NF PIPELINE (TRAINING)
+    ================================
+    transcriptome: ${params.transcriptome_file}
+    reads        : ${params.reads}
+    outdir       : ${params.outdir}
+    """
+    .stripIndent(true)
 
-
-read_pairs_ch = Channel
-    .fromFilePairs(params.reads, checkIfExists: true)
+workflow{
+    read_pairs_ch = Channel
+                    .fromFilePairs(params.reads, checkIfExists: true)
+                    .view()
+}
+    

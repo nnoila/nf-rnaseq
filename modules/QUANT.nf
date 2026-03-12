@@ -3,8 +3,8 @@
  * the index and the matched read files
  */
 process QUANT {
-    tag "Salmon on $sample_id"
-    publishDir params.outdir, mode: 'copy'
+    tag "Quantification on $pair_id"
+    publishDir "${projectDir}/results/quant", mode: 'copy'
 
     input:
     path index
@@ -19,6 +19,6 @@ process QUANT {
     """
 }
 
-workflow{
+workflow {
     QUANT
 }

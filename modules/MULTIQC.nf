@@ -3,7 +3,7 @@
  * and fastqc processes
  */
 process MULTIQC {
-    publishDir "${params.outdir}/multiqc", mode:'copy'
+    publishDir "${projectDir}/results/multiqc", mode:'copy'
 
     input:
     path('*')
